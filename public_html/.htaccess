@@ -1,32 +1,24 @@
-# Включение модуля rewrite
-RewriteEngine On
+php_flag asp_tags on
+php_flag display_errors on
 
-# Базовая директория
-RewriteBase /
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
 
-# Защита от доступа к敏感 файлам
-<FilesMatch "\.(env|json|config.js|md|gitignore|gitattributes|lock)$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
+    RewriteEngine On
 
-# Запрет доступа к директориям managers извне
-RewriteRule ^modules/.*/managers/ - [F]
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-# Запрет доступа к исходным CSS/JS файлам
-RewriteRule ^modules/.*/(css|js)/.*\.(css|js)$ - [F]
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
 
-# Разрешение доступа только к собранным ассетам
-RewriteRule ^assets/ - [L]
-
-# Обработка клиентской части
-RewriteCond %{REQUEST_URI} !^/managers
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
-
-# Обработка админки
-RewriteCond %{REQUEST_URI} ^/managers
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^managers/(.*)$ managers/index.php?route=$1 [QSA,L]
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>

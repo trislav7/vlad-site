@@ -1,123 +1,57 @@
 <?php
-echo "<!DOCTYPE html>
-<html lang='ru'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Vlad Site - Layout Module</title>
-    <link rel='stylesheet' href='/assets/client/layout/main.min.css'>
-</head>
-<body class='bg-gray-50'>
-    <!-- Header -->
-    <header class='layout-header'>
-        <div class='layout-container'>
-            <div class='flex justify-between items-center py-4'>
-                <div class='text-xl font-bold text-gray-800'>
-                    🏗️ Layout Module
-                </div>
-                <nav class='hidden md:flex space-x-6'>
-                    <a href='#' class='text-gray-600 hover:text-blue-600'>Home</a>
-                    <a href='#' class='text-gray-600 hover:text-blue-600'>About</a>
-                    <a href='#' class='text-gray-600 hover:text-blue-600'>Services</a>
-                    <a href='#' class='text-gray-600 hover:text-blue-600'>Contact</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+if (!defined('_PS_MAGIC_QUOTES_GPC_')) {
+    define('_PS_MAGIC_QUOTES_GPC_', false);
+}
 
-    <!-- Main Content -->
-    <main class='layout-container py-8'>
-        <div class='text-center mb-12'>
-            <h1 class='text-4xl font-bold text-gray-800 mb-4'>
-                Layout Module Test
-            </h1>
-            <p class='text-xl text-gray-600 max-w-2xl mx-auto'>
-                Testing the new layout module with Tailwind CSS and custom components
-            </p>
-        </div>
+/**
+ * Ого, вы нашли файл главной страницы сайта! И промокод INDEX, который даст
+ * скидку 10% на товары в Спринтшопе: shop.sprinthost.ru
+ * У нас там прикольный мерч!
+ */
 
-        <!-- Color Tests -->
-        <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12'>
-            <div class='layout-card text-center'>
-                <h3 class='text-lg font-semibold mb-3'>Custom Colors</h3>
-                <div class='space-y-2'>
-                    <div class='h-16 bg-primary-red rounded flex items-center justify-center text-white'>
-                        bg-primary-red
-                    </div>
-                    <div class='h-16 bg-primary-blue rounded flex items-center justify-center text-white'>
-                        bg-primary-blue
-                    </div>
-                    <div class='h-16 bg-primary-green rounded flex items-center justify-center text-white'>
-                        bg-primary-green
-                    </div>
-                </div>
-            </div>
+/**
+ * Эта строчка кода отображает стандартную заглушку. Замените ее,
+ * если у вас уже есть сайт
+ *
+ * Если что — пишите в поддержку, поможем
+ */
 
-            <div class='layout-card text-center'>
-                <h3 class='text-lg font-semibold mb-3'>Button Components</h3>
-                <div class='space-y-3'>
-                    <button class='btn-primary w-full'>
-                        Primary Button
-                    </button>
-                    <button class='btn-secondary w-full'>
-                        Secondary Button
-                    </button>
-                </div>
-            </div>
+//include("/opt/index.php") 
 
-            <div class='layout-card text-center'>
-                <h3 class='text-lg font-semibold mb-3'>Default Tailwind</h3>
-                <div class='space-y-2'>
-                    <div class='h-16 bg-red-500 rounded flex items-center justify-center text-white'>
-                        bg-red-500
-                    </div>
-                    <div class='h-16 bg-blue-500 rounded flex items-center justify-center text-white'>
-                        bg-blue-500
-                    </div>
-                    <div class='h-16 bg-green-500 rounded flex items-center justify-center text-white'>
-                        bg-green-500
-                    </div>
-                </div>
-            </div>
-        </div>
+spl_autoload_register(function ($class) {
+    $folder = str_replace('Controller', '', $class);
+    $folder = strtolower(str_replace('Managers', '', $folder));
 
-        <!-- Hero Section -->
-        <div class='layout-hero rounded-2xl p-8 text-white text-center mb-12'>
-            <h2 class='text-3xl font-bold mb-4'>Hero Section</h2>
-            <p class='text-xl opacity-90 max-w-2xl mx-auto'>
-                This uses the .layout-hero class with gradient background
-            </p>
-        </div>
+//    d($folder);
 
-        <!-- Admin Test Section -->
-        <div class='layout-card'>
-            <h2 class='text-2xl font-bold mb-4'>Admin Layout Test</h2>
-            <div class='space-y-4'>
-                <p>Testing admin layout classes (check browser console for logs):</p>
-                <div class='flex space-x-4'>
-                    <button class='btn-admin-primary'>
-                        Admin Primary
-                    </button>
-                    <button class='btn-admin-secondary'>
-                        Admin Secondary
-                    </button>
-                </div>
-                <div class='h-20 admin-bg-primary rounded flex items-center justify-center text-white'>
-                    admin-bg-primary
-                </div>
-            </div>
-        </div>
-    </main>
+    if ($folder != 'routs' && $folder != 'db' && $folder != 'news' && $class != 'LayoutManagersController' && $class != 'Controller' && $class != 'UrlsManagersController' && $class != 'CategoriesManagersController') {
+//        dump('./modules/' . $folder. '/' . $class . '.php');
+//         d($folder);
+    }
+    if (file_exists('./modules/' . $folder. '/' . $class . '.php')) {
+        include './modules/' . $folder. '/' . $class . '.php';
+    } elseif (file_exists('./engine/' . $class . '.php')) {
+        include './engine/' . $class . '.php';
+    } elseif (preg_match('{\/managers\/}', $_SERVER['REQUEST_URI'])) {
+        include './modules/' . $folder. '/managers/' . $class . '.php';
+    } elseif ($class == 'LayoutManagersController') {
+        include './modules/layout/managers/' . $class . '.php';
+    }
+});
 
-    <!-- Footer -->
-    <footer class='layout-footer'>
-        <div class='layout-container py-8 text-center'>
-            <p>&copy; 2024 Vlad Site. Layout module demonstration.</p>
-        </div>
-    </footer>
+$urlsStr = [];
+$fileCacheUrl = './cache/urls.cache';
+if (file_exists($fileCacheUrl)) {
+    $urlsArray = file_get_contents($fileCacheUrl);
+    if (!empty($urlsArray)) {
+        $urlsStr = json_decode($urlsArray, true);
+    }
+}
 
-    <script src='/assets/client/layout/app.min.js'></script>
-    <script src='/assets/admin/layout/admin.min.js'></script>
-</body>
-</html>";
-?>
+//echo('<pre>'); var_dump($urlsStr); die();
+
+$url = isset($urlsStr[1][$_SERVER['REQUEST_URI']]) ? $urlsStr[1][$_SERVER['REQUEST_URI']] : $_SERVER['REQUEST_URI'];
+
+include('./engine/Init.php');
+include('./engine/config.conf');
+new Init($url);

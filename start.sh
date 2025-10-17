@@ -17,39 +17,6 @@ else
     echo "⚠️ package.json not found in /tmp/"
 fi
 
-# Создаем тестовый файл
-cat > /var/www/html/public_html/index.php << 'EOF'
-<?php
-echo "<h1>✅ PHP is working!</h1>";
-echo "<p>PHP Version: " . phpversion() . "</p>";
-?>
-EOF
-
-# Создаем базовые модули для тестирования сборки
-mkdir -p /var/www/html/public_html/modules/shop/{css,js,managers/{css,js}}
-
-# Тестовый CSS
-cat > /var/www/html/public_html/modules/shop/css/main.css << 'EOF'
-.btn-primary {
-    background: blue;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-EOF
-
-# Тестовый JS
-cat > /var/www/html/public_html/modules/shop/js/app.js << 'EOF'
-console.log('Shop module loaded');
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('.btn-primary')?.addEventListener('click', function() {
-        alert('Build system working!');
-    });
-});
-EOF
-
 # Запускаем PHP-FPM
 echo "Starting PHP-FPM..."
 service php8.1-fpm start
@@ -84,6 +51,10 @@ if [ ! -f "/var/www/html/.watch-started" ]; then
     touch /var/www/html/.watch-started
     echo "✅ Watch processes started"
 fi
+# ✅ ДОБАВЛЯЕМ: Исправляем права при запуске
+echo "🔧 Setting correct permissions..."
+chown -R developer:developer /var/www/html/public_html/assets/ 2>/dev/null || true
+chmod -R 755 /var/www/html/public_html/assets/ 2>/dev/null || true
 
 # Проверяем Nginx
 echo "Testing Nginx configuration..."

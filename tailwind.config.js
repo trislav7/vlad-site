@@ -12,6 +12,7 @@ module.exports = {
           red: '#ff0000',
           blue: '#3b82f6', 
           green: '#10b981',
+          grey: '#353535',
           DEFAULT: '#3b82f6',
         }
       },
