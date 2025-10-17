@@ -1,0 +1,32 @@
+# Включение модуля rewrite
+RewriteEngine On
+
+# Базовая директория
+RewriteBase /
+
+# Защита от доступа к敏感 файлам
+<FilesMatch "\.(env|json|config.js|md|gitignore|gitattributes|lock)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Запрет доступа к директориям managers извне
+RewriteRule ^modules/.*/managers/ - [F]
+
+# Запрет доступа к исходным CSS/JS файлам
+RewriteRule ^modules/.*/(css|js)/.*\.(css|js)$ - [F]
+
+# Разрешение доступа только к собранным ассетам
+RewriteRule ^assets/ - [L]
+
+# Обработка клиентской части
+RewriteCond %{REQUEST_URI} !^/managers
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
+
+# Обработка админки
+RewriteCond %{REQUEST_URI} ^/managers
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^managers/(.*)$ managers/index.php?route=$1 [QSA,L]

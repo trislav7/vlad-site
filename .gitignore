@@ -1,0 +1,52 @@
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+/public_html/assets/  # Собранные ассеты
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+db_data/
+*.sql
+*.sqlite
+
+# Temporary files
+tmp/
+temp/
+
+# Build artifacts
+.build/
+dist/
+
+# Docker volumes
+**/volumes/
+**/data/

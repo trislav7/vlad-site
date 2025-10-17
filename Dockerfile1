@@ -1,0 +1,35 @@
+FROM ubuntu:22.04
+
+ENV TZ=Europe/Moscow
+ENV DEBIAN_FRONTEND=noninteractive
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt-get update && apt-get install -y \
+    nginx \
+    php8.1 \
+    php8.1-fpm \
+    php8.1-mysql \
+    php8.1-cli \
+    curl \
+    nodejs \
+    npm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /run/php /var/www/html/public_html \
+    && chown -R www-data:www-data /var/www/html
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY www.conf /etc/php/8.1/fpm/pool.d/www.conf
+COPY start.sh /start.sh
+
+COPY package.json /tmp/package.json
+RUN cd /tmp && npm install --silent
+
+COPY build-scripts/ /usr/local/bin/
+RUN chmod +x /usr/local/bin/*.sh
+
+RUN chmod +x /start.sh
+
+EXPOSE 80
+CMD ["/start.sh"]

@@ -1,0 +1,35 @@
+# Останавливаем все
+docker-compose down
+
+# Пересобираем
+docker-compose build --no-cache
+
+# Запускаем
+docker-compose up -d
+
+
+# Запуск скриптов сборки напрямую
+docker exec vlad_site_web /usr/local/bin/build-client.sh
+docker exec vlad_site_web /usr/local/bin/build-admin.sh
+
+# Или войти в контейнер и работать оттуда
+docker exec -it vlad_site_web bash
+
+# Внутри контейнера:
+cd /var/www/html
+npm run build:all
+
+# 🔄 Watch-режим для клиентских файлов (в отдельном терминале)
+docker exec -d vlad_site_web npm run watch:client
+
+# 🔄 Watch-режим для админских файлов (в отдельном терминале)
+docker exec -d vlad_site_web npm run watch:admin
+
+# 🔄 Watch-режим для всего сразу
+docker exec -d vlad_site_web npm run watch:all
+
+# 📊 Проверить запущенные watch-процессы
+docker exec vlad_site_web ps aux | grep watch
+
+# 🛑 Остановить все watch-процессы
+docker exec vlad_site_web pkill -f "watch-"
