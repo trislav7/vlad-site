@@ -9,6 +9,8 @@ docker-compose up -d
 
 
 # Запуск скриптов сборки напрямую
+docker exec vlad_site_web /usr/local/bin/watch-client.sh
+
 docker exec vlad_site_web /usr/local/bin/build-client.sh
 docker exec vlad_site_web /usr/local/bin/build-admin.sh
 
